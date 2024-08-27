@@ -1,0 +1,61 @@
+import numpy as np
+import pickle
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import random
+import pandas as pd
+import time
+from openpyxl import load_workbook
+from itertools import permutations, combinations
+from IPython.display import FileLink, display
+
+# Iniciar el temporizador
+start_time = time.time()
+
+# Lista de elementos originales con repeticiones
+elementos = ['G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15', 'G16', 'G17']
+
+# Lista de elementos para el grupo A y B
+grupo_A = ['E1', 'E4', 'E5', 'E6', 'E7']
+grupo_B = ['G2', 'G3', 'G4']
+
+# Generar combinaciones únicas para los grupos A y B
+combinaciones_A = list(combinations(grupo_A, len(grupo_A)))
+combinaciones_B = list(combinations(grupo_B, len(grupo_B)))
+
+# Crear combinaciones finales en el orden A, B, Original
+combinaciones_finales = []
+max_combinaciones = 1_000_000  # Limitar a 1,000,000 de filas por archivo
+contador = 0
+archivo_numero = 1
+enlaces_descarga = []
+
+while True:
+    comb_A = random.choice(combinaciones_A)
+    comb_B = random.choice(combinaciones_B)
+    comb_orig = random.sample(elementos, len(elementos))  # Generar una permutación aleatoria
+    combinaciones_finales.append(list(comb_A) + list(comb_B) + comb_orig)
+    contador += 1
+
+    if contador % max_combinaciones == 0:
+        # Crear DataFrame de pandas para las combinaciones finales
+        df_finales = pd.DataFrame(combinaciones_finales)
+
+        # Guardar el DataFrame en un archivo Excel
+        nombre_archivo = f'combinaciones_finales_{archivo_numero}.xlsx'
+        df_finales.to_excel(nombre_archivo, index=False)
+
+        # Agregar el enlace de descarga a la lista
+        enlaces_descarga.append(FileLink(nombre_archivo))
+
+        # Limpiar la lista de combinaciones finales y aumentar el número de archivo
+        combinaciones_finales = []
+        archivo_numero += 1
+
+# Mostrar todos los enlaces de descarga al final
+for enlace in enlaces_descarga:
+    display(enlace)
+
+# Detener el temporizador y mostrar el tiempo de ejecución
+end_time = time.time()
+print(f"Las combinaciones finales se han guardado en múltiples archivos Excel. Tiempo de ejecución: {end_time - start_time} segundos")
