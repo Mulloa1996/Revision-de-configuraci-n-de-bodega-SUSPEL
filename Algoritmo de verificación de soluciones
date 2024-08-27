@@ -1,0 +1,160 @@
+import numpy as np
+import pickle
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import random
+import pandas as pd
+import time
+from openpyxl import load_workbook
+from itertools import permutations, combinations
+from google.colab import files
+import os
+from pathlib import Path
+import pandas as pd
+
+# Ruta del archivo Excel
+ruta_archivo2 = '/content/drive/MyDrive/Resultados_195.xlsx'
+ruta_archivo = "/content/drive/MyDrive/combinaciones_finales_195.xlsx"
+# Cargar el archivo Excel, saltando las primeras 7 filas y seleccionando las columnas B a Y
+df = pd.read_excel(ruta_archivo, engine="openpyxl", sheet_name="Sheet1", skiprows=1000000,nrows=1, usecols="B:Y")
+# Abre el archivo de Excel
+if not os.path.exists(ruta_archivo2):
+    with pd.ExcelWriter(ruta_archivo2, engine='openpyxl') as writer:
+        pd.DataFrame().to_excel(writer, sheet_name="Hoja1")
+libro = openpyxl.load_workbook(ruta_archivo2)
+# Selecciona la hoja en la que deseas escribir
+hoja = libro['Hoja1']
+
+fila=1
+# Seleccionar solo las primeras 5 filas
+df_limited = df.head(1000000)
+# Grupos y sus columnas respectivas
+grupos = ['Grupo1', 'Grupo2', 'Grupo3', 'Grupo4', 'Grupo5', 'Grupo6', 'Grupo7',
+          'Grupo8', 'Grupo9', 'Grupo10', 'Grupo11', 'Grupo12', 'Grupo13', 'Grupo14',
+          'Grupo15', 'Grupo16','Grupo17', 'Grupo18', 'Grupo19', 'Grupo20', 'Grupo21', 'Grupo22',
+          'Grupo23', 'Grupo24']
+# Crear una lista para almacenar los diccionarios de soluciones
+
+lista_diccionarios = []
+# Iterar sobre las filas limitadas del DataFrame
+
+for index, row in df_limited.iterrows():
+    diccionario_soluciones = {grupo: [] for grupo in set(grupos)}
+    for col_index, value in enumerate(row):
+        grupo = grupos[col_index]
+        diccionario_soluciones[grupo].append(value)
+    lista_diccionarios.append(diccionario_soluciones)
+Distanciagrupos = [[0,0,0,1,0,0,1,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1],[0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1,0,0,0,0,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1],[1,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1,0,1,0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,1,1,1,1,0,0,1],[1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,0,1,1,1,1,0,0,1],[1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,1,0,0,1],[0,1,1,1,1,0,1,1,1,1,1,1,0,1,0,0,1,1,1,1,1,1,1,1],[0,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1],[0,1,0,1,1,0,1,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1],[0,1,0,1,1,0,1,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,0,1,1,1,1,0,0,1],[1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,1,0,0],[1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,1,0,0],[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,0,1,1,1,1,0,0,1],[1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,0,0,0,1,1,0,0,1],[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,0,0,1,1,0]]
+Estantes=["E1","E2","E3","E4","E5","E6","E7","G1","G2","G3","G4","G5","G6","G7","G8","G9","G10","G11","G12","G13","G14","G15","G16", "G17"]
+Compatibilidades=[[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[1,1,1,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+lista_de_diccionarios=[]
+Puntaje = 0
+#   Solo se pueden intercambiar entre ellos
+#   Registro de si está bien o mal
+Registro_estantes={'E1': [""],
+                  'E2': [""],
+                  'E3': [""],
+                  'E4': [""],
+                  'E5': [""],
+                  'E6': [""],
+                  'E7': [""],
+                  'G1': [""],
+                  'G2': [""],
+                  'G3': [""],
+                  'G4': [""],
+                  'G5': [""],
+                  'G6': [""],
+                  'G7': [""],
+                  'G8': [""],
+                  'G9': [""],
+                  'G10': [""],
+                  'G11': [""],
+                  'G12': [""],
+                  'G13': [""],
+                  'G14': [""],
+                  'G15': [""],
+                  'G16': [""],
+                  'G17': [""]}
+# Definir los grupos que necesitan tener valores únicos dentro de ellos
+
+def agregar_a_excel(diccionario):
+    global fila
+    col = 1
+    if not isinstance(fila, int):
+        raise TypeError("Fila debe ser un entero")
+    for value in diccionario.values():
+        # Asegúrate de que value[0] existe y es del tipo esperado
+        if isinstance(value, list) and len(value) > 0:
+            value = str(value[0])
+        else:
+            raise ValueError("El valor no es una lista o está vacío")
+
+        # Verifica que col sea válido
+        if not isinstance(col, int):
+            raise TypeError("Col debe ser un entero")
+        if fila < 1 or col < 1:
+            raise ValueError("Fila o columna deben ser al menos 1")
+
+        print(f"Escribiendo en la fila {fila}, columna {col}, valor: {value}")
+        hoja.cell(row=fila, column=col, value=value)
+        col += 1
+    fila += 1
+
+def contar_factibles():
+    global Puntaje
+    contador = 0
+    #print(Puntaje)
+    for valor in Estantes:
+        print (Registro_estantes[valor])
+        if "Factible" == Registro_estantes[valor][0]:
+            contador += 1
+            print(contador)
+        else:
+            print("no está entrando")
+    if contador > Puntaje:
+        Puntaje=contador
+        lista_de_diccionarios.append([diccionario_soluciones, Puntaje])
+        #rint(Puntaje)
+        #print(lista_de_diccionarios)
+        return [contador]
+def verificar_compatibilidad_estante(name, grupos_dicc): #buscar grupos si existe incompatibilidad en estantes del grupo y aledaños
+    for j in range(24):
+        #print(grupos_dicc['Grupo{}'.format(j+1)])
+        if name in grupos_dicc['Grupo{}'.format(j+1)]:
+            Averificar=[] # estantes a verificar
+            print("entra")
+            for k in range(len(Distanciagrupos[j])):
+                if Distanciagrupos[j][k]==0:
+                    lista_grupos_distancia_a_0 = grupos_dicc["Grupo{}".format(k+1)]
+                    Averificar.extend(lista_grupos_distancia_a_0)
+            pos_name = Estantes.index(name)
+            for name_in_averificar in Averificar:#revisa compatiblidad los elementos de grupos cercanos al grupo del elemento
+                    pos = Estantes.index(name_in_averificar)
+                    compatibilidad_estante = Compatibilidades[pos_name][pos]
+                    if compatibilidad_estante==1:
+                        Registro_estantes[name][0]=("No Factible")
+                        return False
+    Registro_estantes[name][0]=("Factible")
+    return True
+
+if not os.path.exists(ruta_archivo2):
+    with pd.ExcelWriter(ruta_archivo2, engine='openpyxl') as writer:
+        pd.DataFrame().to_excel(writer, sheet_name="Hoja1")
+for h in range(1000000):
+    print(lista_diccionarios[h])
+    grupos_dicc = lista_diccionarios[h]
+    #grupos_dicc=dict(sorted(grupos_dicc.items()))
+  # Llamar a la función para reemplazar duplicados
+  # replace_duplicates(grupos_dicc, unique_groups)
+
+    for i in range(24):
+        verificar_compatibilidad_estante(name=Estantes[i], grupos_dicc=grupos_dicc)
+    actual=contar_factibles()
+    if actual ==24:
+        print("solucionado", lista_diccionarios[h])
+        agregar_a_excel(Registro_estantes)
+        break
+    agregar_a_excel(Registro_estantes)
+files.download('Resultados_195.xlsx')
+libro.save(ruta_archivo2)
+print(lista_de_diccionarios)
