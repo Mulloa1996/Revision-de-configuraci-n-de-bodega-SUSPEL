@@ -1,0 +1,187 @@
+import random
+import time
+import pandas as pd
+import numpy as np
+df=read_excel
+Distanciagrupos=[[0,1,1,1,1,1,1,1],[1,0,0,1,1,1,1,1],[1,0,0,0,1,1,1,1],[1,1,0,0,1,1,1,1],[1,1,1,1,0,0,0,1],[1,1,1,1,0,0,1,0],[1,1,1,1,0,1,0,0],[1,1,1,1,1,0,0,0]]
+Estantes=["e1","e2","e3","e4","e5","e6","e7","g1","g2","g3","g4","g5","g6","g7","g8","g9","g10","g11","g12","g13","g14","g15","g16", "g17"]
+Compatibilidades=[[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0],[1,1,1,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[1,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[0,1,0,1,1,0,1,1,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,1,1,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+grupos_dicc = {
+    "Grupo1": ["e3","g1","e5","e4"],
+    "Grupo2": ["g9","g8","g6","g7"],
+    "Grupo3": ["e1","e6"],
+    "Grupo4": ["e2","e7"],
+    "Grupo5": ["g11","g12","g13","g14"],
+    "Grupo6": ["g4","g17"],
+    "Grupo7": ["g10","g16","g5","g15"],
+    "Grupo8": ["g2","g3"]
+}
+lista_de_diccionarios=[]
+Puntaje = 0
+max_tiempo = 27200
+#   Solo se pueden intercambiar entre ellos
+A=["e1", "e4", "e5", "e6", "e7"]
+B=["e2", "e3"]
+C=["g1", "g2", "g3", "g4"]
+D=["g5", "g6", "g7", "g8", "g9", "g10", "g11", "g12", "g13", "g14", "g15", "g16", "g17"]
+Tipos={"A":["e1", "e4", "e5", "e6", "e7"],"B":["e2", "e3"],"C":["g1", "g2", "g3", "g4"],"D":["g5", "g6", "g7", "g8", "g9", "g10", "g11", "g12", "g13", "g14", "g15", "g16", "g17"]}
+Elementos={
+                   'e1': ["A", 0],
+                   'e2': ["B", 0],
+                   'e3': ["B", 0],
+                   'e4': ["A", 0],
+                   'e5': ["A", 0],
+                   'e6': ["A", 0],
+                   'e7': ["A", 0],
+                   'g1': ["C", 0],
+                   'g2': ["C", 0],
+                   'g3': ["C", 0],
+                   'g4': ["C", 0],
+                   'g5': ["D", 0],
+                   'g6': ["D", 0],
+                   'g7': ["D", 0],
+                   'g8': ["D", 0],
+                   'g9': ["D", 0],
+                   'g10': ["D", 0],
+                   'g11': ["D", 0],
+                   'g12': ["D", 0],
+                   'g13': ["D", 0],
+                   'g14': ["D", 0],
+                   'g15': ["D", 0],
+                   'g16': ["D", 0],
+                   'g17': ["D", 0]}
+#   Registro de si está bien o mal
+Registro_estantes={'e1': [""],
+                   'e2': [""],
+                   'e3': [""],
+                   'e4': [""],
+                   'e5': [""],
+                   'e6': [""],
+                   'e7': [""],
+                   'g1': [""],
+                   'g2': [""],
+                   'g3': [""],
+                   'g4': [""],
+                   'g5': [""],
+                   'g6': [""],
+                   'g7': [""],
+                   'g8': [""],
+                   'g9': [""],
+                   'g10': [""],
+                   'g11': [""],
+                   'g12': [""],
+                   'g13': [""],
+                   'g14': [""],
+                   'g15': [""],
+                   'g16': [""],
+                   'g17': [""]}
+
+def dimesugrupo(name):
+    for j in range(8):
+        if name in grupos_dicc["Grupo{}".format(j+1)]:
+            return "Grupo{}".format(j+1)
+def sondelmismotipo(name, name2):
+    if dimesutipo(name)==dimesutipo(name2):
+        return True
+    else:
+        return False
+def dimesutipo(name):
+    return Elementos[name][0]
+def damedelmismotipo(name):
+    return grupos_dicc[dimesutipo(name)]
+def cambiacon(diccionario, name, name2):
+    saledelgrupo=dimesugrupo(name)
+    entraalgrupo=dimesugrupo(name2)
+    indice=dimesuindice_dicc(name)
+    indice2=dimesuindice_dicc(name2)
+    diccionario[saledelgrupo][indice], diccionario[entraalgrupo][indice2]=diccionario[entraalgrupo][indice2], diccionario[saledelgrupo][indice]
+def dimesuindice_dicc(name):
+    return grupos_dicc[dimesugrupo(name)].index(name)
+def verificar_compatibilidad_estante(name): #buscar grupos si existe incompatibilidad en estantes del grupo y aledaños
+    for j in range(8):
+        if name in grupos_dicc["Grupo{}".format(j+1)]:
+            Averificar=[] # estantes a verificar
+            for k in range(len(Distanciagrupos[j])):
+                if Distanciagrupos[j][k]==0:
+                    lista_grupos_distancia_a_0 = grupos_dicc["Grupo{}".format(k+1)]
+                    Averificar.extend(lista_grupos_distancia_a_0)
+            pos_name = Estantes.index(name)
+            for name_in_averificar in Averificar:#revisa compatiblidad los elementos de grupos cercanos al grupo del elemento
+                pos = Estantes.index(name_in_averificar)
+                compatibilidad_estante = Compatibilidades[pos_name][pos]
+                if compatibilidad_estante==1:
+                    Registro_estantes[name][0]=("No Factible")
+                    return False
+    Registro_estantes[name][0]=("Factible")
+    return True
+def contar_factibles():
+    global Puntaje
+    contador = 0
+    #print(Puntaje)
+    for valor in Estantes:
+        print (Registro_estantes[valor])
+        if "Factible" == Registro_estantes[valor][0]:
+            contador += 1
+            print(contador)
+        else:
+            print("no está entrando")
+    if contador > Puntaje:
+        Puntaje=contador
+        lista_de_diccionarios.append([grupos_dicc, Puntaje])
+        print(Puntaje)
+        print(lista_de_diccionarios)
+        return Puntaje, contador
+def Factible():#revisa factibilidad de todos los estantes
+    i=0
+    numeros = list(range(24))
+    muestra_aleatoria = random.sample(numeros, len(numeros))
+    for i in muestra_aleatoria:
+        verificar_compatibilidad_estante(Estantes[i])
+        if Registro_estantes[Estantes[i]][0]=="Factible":
+            i=i+1
+        else:
+            Elementos[Estantes[i]][1]=Elementos[Estantes[i]][1]+1
+            return False
+    return True, print("lo lograste")
+
+def esfactible(name):
+    if Registro_estantes[name][0]=="Factible":
+        return True
+    elif Registro_estantes[name][0]=="No Factible":
+        return False
+    else:
+        return
+def Genera_solucion(max_tiempo):
+    print("entró")
+    inicio_tiempo=time.time()
+    while True:
+        fin_tiempo = time.time()
+        if fin_tiempo - inicio_tiempo >= max_tiempo:
+            print("terminó el tiempo")
+            break
+        indice1=random.randint(0,len(Estantes)-1)
+        indice2=random.randint(0,len(Estantes)-1)
+        if Estantes[indice1]!="g1" and Estantes[indice2]!="g1":
+            if sondelmismotipo(Estantes[indice1], Estantes[indice2]):
+                cambiacon(grupos_dicc, Estantes[indice1], Estantes[indice2])
+                if Factible():
+                    contar_factibles()
+                    return True, print(grupos_dicc, "terminó")
+                    break
+                else:
+                    contar_factibles()
+                    pass
+            else:
+                pass
+        else:
+            pass
+for i in range(24):
+    verificar_compatibilidad_estante(Estantes[i])
+ #print(Registro_estantes)
+Genera_solucion(max_tiempo)
+print("Resultado")
+print((grupos_dicc))
+print("ta bien o mal")
+print((Registro_estantes))
+print("No Factibles por Estante")
+print(Elementos)
